@@ -278,3 +278,6 @@ cride/media/
 .env
 .envs/*
 !.envs/.local/
+
+circles.csv
+import_data.py
