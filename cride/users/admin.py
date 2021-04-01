@@ -10,9 +10,9 @@ from cride.users.models import User, Profile
 class CustomUserAdmin(UserAdmin):
     """User model admin configuration."""
     readonly_fields = ('id','email')
-    list_display=('id','email','username','first_name','last_name','is_staff','is_client','is_active')
+    list_display=('id','email','username','first_name','last_name','is_verified','is_staff','is_client','is_active')
     search_fields = ('id','email','username')
-    list_filter = ('is_staff','is_client','is_active','created','modified')
+    list_filter = ('is_verified','is_staff','is_client','is_active','created','modified')
 
 
 @admin.register(Profile)
