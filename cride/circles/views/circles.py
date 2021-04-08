@@ -8,7 +8,7 @@ from cride.circles.models import Circle, Membership
 # Serializers
 from cride.circles.serializers import CircleModelSerializer
 # Permissions
-from cride.circles.permissions import IsCircleAdmin
+from cride.circles.permissions.circles import IsCircleAdmin
 
 class CircleViewSet(mixins.CreateModelMixin,
                     mixins.RetrieveModelMixin,
