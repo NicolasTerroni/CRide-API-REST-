@@ -23,7 +23,7 @@ class Membership(CRideModel):
     )
     # Invitations
     used_invitation = models.PositiveSmallIntegerField(default=0)
-    remaining_invitation = models.PositiveSmallIntegerField(default=0)
+    remaining_invitations = models.PositiveSmallIntegerField(default=0)
     invited_by = models.ForeignKey(
         'users.User',
         null=True,
@@ -37,7 +37,7 @@ class Membership(CRideModel):
     # Status
     is_active = models.BooleanField(
         'active status',
-        default= True,\
+        default= True,
         help_text="Only active users are allowed to interact in the circle."
     )
     
