@@ -24,7 +24,7 @@ from cride.users.serializers import (
 from cride.users.models import User
 from cride.circles.models import Circle
 
-class UserViewSet(viewsets.ModelViewSet, mixins.RetrieveModelMixin):
+class UserViewSet(viewsets.ModelViewSet, mixins.RetrieveModelMixin, mixins.UpdateModelMixin):
     """User view set.
     
     Handle sign up, login and account verification."""
@@ -37,7 +37,7 @@ class UserViewSet(viewsets.ModelViewSet, mixins.RetrieveModelMixin):
         """Assign permissions based on actions."""
         if self.action in ['signup','login','verify']:
             permissions = [AllowAny]
-        elif self.action == 'retrieve':
+        elif self.action in ['retrieve','update','partial_update']:
             permissions = [IsAuthenticated, IsAccountOwner]
         else:
             permissions = [IsAuthenticated]
@@ -77,6 +77,9 @@ class UserViewSet(viewsets.ModelViewSet, mixins.RetrieveModelMixin):
             'access_token': token,
         }
         return Response(data, status=status.HTTP_201_CREATED)
+
+
+
 
     def retrieve(self,request,*args,**kwargs):
         """Add extra data to the response."""
