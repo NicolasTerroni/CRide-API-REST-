@@ -48,3 +48,8 @@ class MembershipViewSet(mixins.ListModelMixin,
             circle=self.circle,
             is_active=True,
         )
+    
+    def perform_destroy(self,instance):
+        """Disable membership"""
+        instance.is_active = False
+        instance.save()
