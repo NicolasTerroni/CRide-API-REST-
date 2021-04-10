@@ -22,7 +22,7 @@ class Membership(CRideModel):
         help_text= "Circle admins can update the circles data and manage its members."
     )
     # Invitations
-    used_invitation = models.PositiveSmallIntegerField(default=0)
+    used_invitations = models.PositiveSmallIntegerField(default=0)
     remaining_invitations = models.PositiveSmallIntegerField(default=0)
     invited_by = models.ForeignKey(
         'users.User',
