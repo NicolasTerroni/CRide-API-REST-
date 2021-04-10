@@ -20,9 +20,14 @@ from cride.users.models import User, Profile
 import jwt
 from datetime import timedelta
 
+# Serializers
+from cride.users.serializers.profiles import ProfileModelSerializer
+
 
 class UserModelSerializer(serializers.ModelSerializer):
     """User model serializer."""
+
+    profile = ProfileModelSerializer(read_only=True)
 
     class Meta:
         """Meta class."""
@@ -34,6 +39,7 @@ class UserModelSerializer(serializers.ModelSerializer):
             'last_name',
             'email',
             'phone_number',
+            'profile',
         )
 
 

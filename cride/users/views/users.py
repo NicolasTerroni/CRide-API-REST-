@@ -19,6 +19,7 @@ from cride.users.serializers import (
     UserModelSerializer, 
     UserSignUpSerializer,
     AccountVerificationSerializer,
+    ProfileModelSerializer,
 )
 # Models
 from cride.users.models import User
@@ -37,7 +38,7 @@ class UserViewSet(viewsets.ModelViewSet, mixins.RetrieveModelMixin, mixins.Updat
         """Assign permissions based on actions."""
         if self.action in ['signup','login','verify']:
             permissions = [AllowAny]
-        elif self.action in ['retrieve','update','partial_update']:
+        elif self.action in ['retrieve','update','partial_update','profile']:
             permissions = [IsAuthenticated, IsAccountOwner]
         else:
             permissions = [IsAuthenticated]
@@ -78,7 +79,22 @@ class UserViewSet(viewsets.ModelViewSet, mixins.RetrieveModelMixin, mixins.Updat
         }
         return Response(data, status=status.HTTP_201_CREATED)
 
+    @action(detail=True, methods=['put','patch'])
+    def profile(self,request,*args,**kwargs):
+        """Update profile data."""
+        user = self.get_object()
+        profile = user.profile
+        partial = request.method == 'PATCH'
+        serializer = ProfileModelSerializer(
+            profile,
+            data=request.data,
+            partial=partial,
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        data = UserModelSerializer(user).data
 
+        return Response(data)
 
 
     def retrieve(self,request,*args,**kwargs):
