@@ -14,7 +14,7 @@ from cride.circles.serializers import MembershipModelSerializer, AddMemberSerial
 
 # Permissions
 from rest_framework.permissions import IsAuthenticated
-from cride.circles.permissions.memberships import IsActiveCircleMember, IsSelfMember
+from cride.circles.permissions.memberships import IsActiveCircleMember, IsSelfMember, IsAdminOrMembershipOwner
 
 class MembershipViewSet(mixins.ListModelMixin,
                         mixins.CreateModelMixin,
@@ -38,6 +38,8 @@ class MembershipViewSet(mixins.ListModelMixin,
             permissions.append(IsActiveCircleMember)
         if self.action in ['invitations',]:
             permissions.append(IsSelfMember)
+        if self.action in ['destroy',]:
+            permissions.append(IsAdminOrMembershipOwner)
         return [permission() for permission in permissions]
     
     def get_queryset(self):
