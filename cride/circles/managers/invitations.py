@@ -13,15 +13,15 @@ class InvitationManager(models.Manager):
     
     Handle the invitations's codes creation."""
 
-    CODE_LENGHT = 10
+    CODE_LENGTH = 10
 
     def create(self,**kwargs):
         """Handle code creation."""
         pool = ascii_uppercase + digits + '.-_'
-        code = kwargs.get('code', ''.join(random.choices(pool, k=self.CODE_LENGHT)))
+        code = kwargs.get('code', ''.join(random.choices(pool, k=self.CODE_LENGTH)))
 
         while self.filter(code=code).exists():
-            code = ''.join(random.choices(pool, k=self.CODE_LENGHT))
+            code = ''.join(random.choices(pool, k=self.CODE_LENGTH))
         kwargs['code'] = code
 
         return super(InvitationManager, self).create(**kwargs)

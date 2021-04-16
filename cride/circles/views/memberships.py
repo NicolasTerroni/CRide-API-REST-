@@ -70,7 +70,7 @@ class MembershipViewSet(mixins.ListModelMixin,
         
         Will return a list containin all the members that
         have used its invitations and another list containing
-        the invitations taht haven't been used yet.
+        the invitations that haven't been used yet.
         """
         member = self.get_object()
 

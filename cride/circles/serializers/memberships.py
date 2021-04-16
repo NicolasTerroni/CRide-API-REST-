@@ -42,7 +42,7 @@ class AddMemberSerializer(serializers.Serializer):
     """Add member serializer.
     
     Handle the addition of new members to a circle.
-    Circle objects must be provded in the context."""
+    Circle objects must be provided in the context."""
 
     invitation_code = serializers.CharField(min_length=8)
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())

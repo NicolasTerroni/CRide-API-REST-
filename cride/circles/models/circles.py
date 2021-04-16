@@ -2,6 +2,7 @@
 
 # Django
 from django.db import models
+
 # Utilities
 from cride.utils.models import CRideModel
 

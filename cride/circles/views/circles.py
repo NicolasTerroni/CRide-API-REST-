@@ -30,6 +30,7 @@ class CircleViewSet(mixins.CreateModelMixin,
 
     # Filters
     filter_backends = (SearchFilter,OrderingFilter,DjangoFilterBackend)
+    
     search_fields = ('slug_name','name')
     ordering_fields = ('rides_offered','rides_taken','name','created','members_limit')
     ordering = ('-members','-rides_offered','-rides_taken')
