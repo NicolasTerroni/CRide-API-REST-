@@ -2,6 +2,10 @@
 
 # Django REST Framework
 from rest_framework import viewsets
+from rest_framework.generics import get_object_or_404
+
+# Models
+from cride.circles.models import Circle
 
 class AddCircleMixin(viewsets.GenericViewSet):
     """Add circle mixin

@@ -2,7 +2,6 @@
 
 # Django REST Framework
 from rest_framework import mixins, viewsets
-from rest_framework.generics import get_object_or_404
 
 # Permissions
 from rest_framework.permissions import IsAuthenticated
@@ -25,3 +24,9 @@ class RideViewSet(  AddCircleMixin,
 
     serializer_class = CreateRideSerialiazer
     permssion_classes = [IsAuthenticated, IsActiveCircleMember]
+
+    def get_serializer_context(self):
+        """Add circle to serializer context."""
+        context = super(RideViewSet, self).get_serializer_context()
+        context['circle'] = self.circle
+        return context
