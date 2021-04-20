@@ -1,0 +1,11 @@
+"""Rides permissions."""
+
+# Django REST Framework
+from rest_framework.permissions import BasePermission
+
+class IsRideOwner(BasePermission):
+    """Verify requesting user is the ride publisher."""
+
+    def has_object_permission(self,request,view,obj):
+        """Verify requesting user is the ride publisher."""
+        return request.user == obj.offered_by
