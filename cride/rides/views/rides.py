@@ -8,7 +8,7 @@ from rest_framework.response import Response
 # Permissions
 from rest_framework.permissions import IsAuthenticated
 from cride.circles.permissions.memberships import IsActiveCircleMember
-from cride.rides.permissions.rides import IsRideOwner
+from cride.rides.permissions.rides import IsRideOwner, IsNotRideOwner
 
 # Filters
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -48,8 +48,13 @@ class RideViewSet(  AddCircleMixin,
     def get_permissions(self):
         """Assign permissions based on action."""
         permissions = [IsAuthenticated, IsActiveCircleMember]
+
         if self.action in ['update','partial_update']:
             permissions.append(IsRideOwner)
+
+        if self.action == 'join':
+            permissions.append(IsNotRideOwner)
+
         return [permission() for permission in permissions]
 
     def get_serializer_context(self):
