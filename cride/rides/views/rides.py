@@ -1,7 +1,9 @@
 """Ride views"""
 
 # Django REST Framework
-from rest_framework import mixins, viewsets
+from rest_framework import mixins, viewsets, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 # Permissions
 from rest_framework.permissions import IsAuthenticated
@@ -12,7 +14,11 @@ from cride.rides.permissions.rides import IsRideOwner
 from rest_framework.filters import SearchFilter, OrderingFilter
 
 # Serializers
-from cride.rides.serializers import CreateRideSerialiazer, RideModelSerializer
+from cride.rides.serializers import (
+    CreateRideSerialiazer, 
+    RideModelSerializer, 
+    JoinRideSerializer,
+    )
 
 # Model
 from cride.circles.models import Circle
@@ -56,6 +62,8 @@ class RideViewSet(  AddCircleMixin,
         """Return serializer based on action."""
         if self.action == 'create':
             return CreateRideSerialiazer
+        if self.action == 'update':
+            return JoinRideSerializer
         return RideModelSerializer
 
     def get_queryset(self):
@@ -66,3 +74,18 @@ class RideViewSet(  AddCircleMixin,
             is_active=True,
             available_seats__gte=1
         )
+
+    @action(detail=True,methods=['post'])
+    def join(self,request,*args,**kwargs):
+        """Add requesting user to ride."""
+        ride = self.get_object()
+        serializer = JoinRideSerializer(
+            ride,
+            data={'passenger':request.user.pk},
+            context={'ride':ride,'circle':self.circle},
+            partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        ride = serializer.save()
+        data = RideModelSerializer(ride).data
+        return Response(data, status=status.HTTP_200_OK)
