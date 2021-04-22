@@ -142,6 +142,9 @@ class JoinRideSerializer(serializers.ModelSerializer):
             )
         except Membership.DoesNotExist:
             raise serializers.ValidationError('User is not an active member of the circle.')
+
+        if Ride.objects.filter(passengers=data,is_active=True).exists():
+            raise serializers.ValidationError("User is already in an active ride!")
         
         self.context['user'] = user
         self.context['member'] = membership
