@@ -167,11 +167,13 @@ class JoinRideSerializer(serializers.ModelSerializer):
 
     def update(self,instance,data):
         """Add passenger to ride and update stats."""
-        ride = self.context['ride']
+        ride = self.instance
         user = self.context['user']
         circle = self.context['circle']
 
         ride.passengers.add(user)
+        ride.available_seats -= 1
+        ride.save()
 
         # Profile
         profile = user.profile
