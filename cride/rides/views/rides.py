@@ -19,6 +19,7 @@ from cride.rides.serializers import (
     RideModelSerializer, 
     JoinRideSerializer,
     EndRideSerializer,
+    CreateRideRatingSerializer
     )
 
 # Model
@@ -73,11 +74,13 @@ class RideViewSet(  AddCircleMixin,
             return JoinRideSerializer
         if self.action == 'finish':
             return EndRideSerializer
+        if self.action == 'rate':
+            return CreateRideRatingSerializer
         return RideModelSerializer
 
     def get_queryset(self):
         """Return active circles's rides."""
-        if self.action != 'finish':
+        if self.action not in ['finish','retrieve']:
             offset = timezone.now() + timedelta(minutes=20)
             return self.circle.ride_set.filter(
                 departure_date__gte=offset,
@@ -117,3 +120,19 @@ class RideViewSet(  AddCircleMixin,
         ride = serializer.save()
         data = RideModelSerializer(ride).data
         return Response(data, status=status.HTTP_200_OK)
+
+    @action(detail=True,methods=['post'])
+    def rate(self, request, *args, **kwargs):
+        """Rate ride."""
+        ride = self.get_object()
+        serializer_class = self.get_serializer_class()
+        context = self.get_serializer_context()
+        context['ride'] = ride
+        serializer = serializer_class(data=request.data, context=context)
+        serializer.is_valid(raise_exception=True)
+        ride = serializer.save()
+        data = RideModelSerializer(ride).data
+        return Response(data, status=status.HTTP_201_CREATED)
+
+
+

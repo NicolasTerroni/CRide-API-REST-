@@ -159,8 +159,9 @@ class JoinRideSerializer(serializers.ModelSerializer):
 
         if ride.available_seats < 1:
             raise serializers.ValidationError("Ride is already full.")
-
-        if ride.passengers.filter(pk=self.context['user'].pk).exists():
+        
+        user = self.context['user']
+        if ride.passengers.filter(pk=user.pk).exists():
             raise serializers.ValidationError('Passenger is already in this trip')
 
         return data
@@ -170,7 +171,9 @@ class JoinRideSerializer(serializers.ModelSerializer):
         ride = self.instance
         user = self.context['user']
         circle = self.context['circle']
+        member = self.context['member']
 
+        # Ride
         ride.passengers.add(user)
         ride.available_seats -= 1
         ride.save()
@@ -181,7 +184,6 @@ class JoinRideSerializer(serializers.ModelSerializer):
         profile.save()
 
         # Membership
-        member = self.context['member']
         member.rides_taken += 1
         member.save()
 
@@ -209,3 +211,4 @@ class EndRideSerializer(serializers.ModelSerializer):
         if data <= ride.departure_date:
             raise serializers.ValidationError("Ride has not started yet.")
         return data
+
