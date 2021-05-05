@@ -24,39 +24,41 @@ class CreateRideRatingSerializer(serializers.ModelSerializer):
         """Verify rating hasn't been emited before."""
         user = self.context['request'].user
         ride = self.context['ride']
+
         if not ride.passengers.filter(pk=user.pk).exists():
             raise serializers.ValidationError("User is not a passenger.")
 
-        q = Rating.objects.filter(
+        this_rating = Rating.objects.filter(
             circle = self.context['circle'],
             ride = ride,
             rating_user=user
         )
-        if q.exists():
+        if this_rating.exists():
             raise serializers.ValidationError("Rating has already been emited.")
         return data
         
     def create(self,data):
         """Create rating."""
-        offered_by = self.context['ride'].offered_by
+        ride = self.context['ride']
+        offered_by = ride.offered_by
 
         Rating.objects.create(
             circle=self.context['circle'],
-            ride=self.context['ride'],
-            raitng_user=self.context['request'].user,
+            ride=ride,
+            rating_user=self.context['request'].user,
             rated_user=offered_by,
             **data
         )
 
         ride_avg = round(
             Rating.objects.filter(
-                circle=slef.context['circle'],
-                ride=self.context['ride'],
+                circle=self.context['circle'],
+                ride=ride,
             ).aggregate(Avg('rating'))['rating__avg'],
             1
         )
-        self.context['ride'].rating = ride_avg
-        self.context['ride'].save()
+        ride.rating = ride_avg
+        ride.save()
 
         user_avg = round(
             Rating.objects.filter(
@@ -67,4 +69,4 @@ class CreateRideRatingSerializer(serializers.ModelSerializer):
         offered_by.profile.reputation = user_avg
         offered_by.profile.save()
 
-        return self.context['ride']
+        return ride
